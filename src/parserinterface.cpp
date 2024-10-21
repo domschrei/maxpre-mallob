@@ -75,7 +75,8 @@ namespace maxPreprocessor {
 	}
 
 
-	void ParserInterface::getInstance(std::vector<int>& ret_compressed_clauses, std::vector<std::pair<uint64_t, int>> & ret_objective, bool addRemovedWeight) {
+	void ParserInterface::getInstance(std::vector<int>& ret_compressed_clauses, std::vector<std::pair<uint64_t, int>> & ret_objective,
+			int& ret_nbVars, int& ret_nbClauses, bool addRemovedWeight) {
 		if (!has_preprocessed) {
 			cerr << "Warning, calling get initialize without preprocessing, output structures not altered " << endl;
 			return;
@@ -95,6 +96,9 @@ namespace maxPreprocessor {
 
     	assert(retClauses.size() == retWeights.size());
   
+		ret_nbVars = 0;
+		ret_nbClauses = 0;
+
 		for (size_t i = 0; i < retClauses.size(); i++) {
 			uint64_t weight = retWeights[i];
 
@@ -103,12 +107,15 @@ namespace maxPreprocessor {
 				assert(retClauses[i].size() == 1);
 				assert(weight > 0);
 				ret_objective.push_back(make_pair(weight, (-1) * retClauses[i][0]));
+				ret_nbVars = std::max(ret_nbVars, std::abs(retClauses[i][0]));
         	}
 			else {
 				for (size_t cl_ind = 0 ; cl_ind < retClauses[i].size(); cl_ind++) {
 					ret_compressed_clauses.push_back(retClauses[i][cl_ind]);
+					ret_nbVars = std::max(ret_nbVars, std::abs(retClauses[i][cl_ind]));
 				}
 				ret_compressed_clauses.push_back(0);
+				ret_nbClauses++;
 			}			
 		}
 		return;
@@ -121,8 +128,8 @@ namespace maxPreprocessor {
 		
 		std::vector<int> clauses;
 		std::vector<std::pair<uint64_t, int>> objective;
-				
-		getInstance(clauses, objective, true);
+		int nbVars, nbClauses;
+		getInstance(clauses, objective, nbVars, nbClauses, true);
 
 
 		assert(outputFormat == INPUT_FORMAT_WPMS22);

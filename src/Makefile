@@ -1,6 +1,6 @@
 GITV = $(shell git describe --always --dirty)
 CC = g++
-CFLAGS = -std=c++11 -O2 -Wall -Wextra -Wshadow -g -Wfatal-errors -fPIC -Isatsolver/solvers/glucose3/ -DGIT_IDENTIFIER=\"$(GITV)\"
+CFLAGS = -std=c++17 -O3 -Wall -Wextra -Wshadow -g -Wfatal-errors -fPIC -flto -Isatsolver/solvers/glucose3/ -DGIT_IDENTIFIER=\"$(GITV)\"
 OBJFILES = preprocessor.o inputreader.o outputreader.o preprocessedinstance.o trace.o utility.o probleminstance.o timer.o clause.o log.o AMSLEX.o touchedlist.o preprocessorinterface.o parserinterface.o cardinalityconstraint.o satlikeinterface.o cpreprocessorinterface.o prooflogger.o
 LIBS =
 LIBFILES = satsolver/solvers/lib/libglucose3.a

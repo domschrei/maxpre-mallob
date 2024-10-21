@@ -38,7 +38,7 @@ public:
 	// If "addRemovedWeight = 1" the returned objective will contain a fresh variable x with a coefficient exactly equal 
 	// to the lower bound proved by the preprocessor, and the clauses will contain a unit clause (not x). Essentially, x is then a trivial core
 	// If addRemovedWeight = 0, any cost computed by the objective should be increased by get_lb() in order to get the cost of the original instance. 
-	void getInstance(std::vector<int>& ret_compressed_clauses, std::vector<std::pair<uint64_t, int>> & ret_objective, bool addRemovedWeight= 1);
+	void getInstance(std::vector<int>& ret_compressed_clauses, std::vector<std::pair<uint64_t, int>> & ret_objective, int& ret_nbVars, int& ret_nbClauses, bool addRemovedWeight= 1);
 	
 	/* Preprocesses the current maxsat instance with the given techniques
 	 * string, loglevel and timelimit.

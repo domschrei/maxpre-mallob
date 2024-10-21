@@ -33,8 +33,7 @@ void Trace::BVE(int var, const vector<vector<int> >& nClauses) {
 
 void Trace::BCE(int lit, const vector<int>& clause) {
 	operations.push_back(3);
-	data.push_back(vector<int>());
-	data.back().push_back(lit);
+	data.push_back({lit});
 	for (int l : clause) {
 		if (l != lit) {
 			data.back().push_back(l);
