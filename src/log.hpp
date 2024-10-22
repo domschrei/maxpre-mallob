@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstdint>
+#include <vector>
 
 #include "timer.hpp"
 
