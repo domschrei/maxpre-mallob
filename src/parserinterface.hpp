@@ -4,23 +4,20 @@
 #include <cstdint>
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 #include "preprocessorinterface.hpp"
 
 namespace maxPreprocessor {
 class ParserInterface {
 private:
-	maxPreprocessor::PreprocessorInterface* pif;
+	std::unique_ptr<maxPreprocessor::PreprocessorInterface> pif;
 public:
 	/*
 	* the constructor simply initializez the reader and the preprocessor interface. 
 	*/
 	ParserInterface();
-
-	~ParserInterface() {
-    	if (pif != NULL)
-      		delete pif;
-  	}
+	~ParserInterface() {}
 
 private: 
 	// Check if the interface has been initialized. 

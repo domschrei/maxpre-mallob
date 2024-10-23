@@ -11,7 +11,6 @@
 using namespace std;
 namespace maxPreprocessor {
 	ParserInterface::ParserInterface() {
-		pif = NULL;
 		has_preprocessed = false;
 	}
 
@@ -23,7 +22,7 @@ namespace maxPreprocessor {
 			cerr<<"Failed to parse input instance: "<<inputReader.readError<<endl;
 			return readStatus;
 		}
-		pif = new maxPreprocessor::PreprocessorInterface (inputReader.clauses, inputReader.weights, inputReader.top, false);
+		pif.reset(new maxPreprocessor::PreprocessorInterface (inputReader.clauses, inputReader.weights, inputReader.top, false));
 		return readStatus;
 	}
 
@@ -31,7 +30,7 @@ namespace maxPreprocessor {
 	* Many of the functions require the interface to not be null, auxiliary method to check this
 	*/
 	bool ParserInterface::pif_ok(string calling_func) {
-		if (pif == NULL) {
+		if (!pif) {
 			cerr << "ERROR calling " << calling_func << " when preprocessor interface is NULL. Call read_file_init_interface first "  << endl; 
 			return false;
 		}
