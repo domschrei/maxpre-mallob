@@ -30,8 +30,8 @@ namespace maxPreprocessor {
 	* Many of the functions require the interface to not be null, auxiliary method to check this
 	*/
 	bool ParserInterface::pif_ok(string calling_func) {
-		if (!pif) {
-			cerr << "ERROR calling " << calling_func << " when preprocessor interface is NULL. Call read_file_init_interface first "  << endl; 
+		if (pif == NULL) {
+			cerr << "ERROR calling " << calling_func << " when preprocessor interface is NULL. Call read_file_init_interface first. "  << endl; 
 			return false;
 		}
 		return true; 
@@ -71,6 +71,13 @@ namespace maxPreprocessor {
 		pif->preprocess(techniques,logLevel, timeLimit);
 		has_preprocessed = true; 
 		return; 
+	}
+
+	bool ParserInterface::lastCallInterrupted() {
+		if (!pif_ok("last_call_interrupted")) {
+			return false;
+		}
+		return pif->lastCallInterrupted();
 	}
 
 

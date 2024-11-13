@@ -31,6 +31,7 @@ public:
 	int gatesExtracted;
 	int labelsMatched;
 	int binaryCoresFound;
+	bool interrupted;
 	Log();
 	Technique charToTechnique(char t);
 	void startTechnique(Technique t);
