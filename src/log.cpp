@@ -251,6 +251,10 @@ void Log::timePlan(double timeLimit_, string useTechniques) {
 }
 
 bool Log::requestTime(Technique t) {
+	if (asyncInterruptSet) {
+		interrupted = true;
+		return false;
+	}
 	if (timeLimit > infTime/2) return true;
 	assert(activeTechnique == t);
 	if (askHistory.size() == 0 || askHistory.back() != t) newRequest(t);

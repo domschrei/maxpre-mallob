@@ -42,6 +42,13 @@ public:
 	 */
 	void preprocess(std::string techniques, int logLevel = 0, double timeLimit = 1e9);
 
+	/* Permanently interrupts preprocessing for this instance. Can be called asynchronously to an ongoing call.
+	 * Preprocessing will then be interrupted at the earliest possible point.
+	 */
+	void interruptAsynchronously() {
+		pif->interruptAsynchronously();
+	}
+
 	bool lastCallInterrupted();
 
 	uint64_t get_lb();
