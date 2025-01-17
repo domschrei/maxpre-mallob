@@ -26,6 +26,8 @@ public:
 	int excessVar;
 
 	TouchedList tl;
+
+	bool asyncInterruptSet {false};
 private:
 	void init(uint64_t topWeight);
 public:
@@ -94,6 +96,8 @@ public:
 	int getExcessVar();
 	uint64_t getWeightSum(int objective);
 	std::vector<uint64_t> getWeightSums();
+
+	void interruptAsynchronously() {asyncInterruptSet = true;}
 
 	// for debugging purposes
 	void printClauses(std::ostream& out);

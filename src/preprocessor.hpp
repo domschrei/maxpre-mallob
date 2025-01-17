@@ -151,6 +151,11 @@ public:
 
 	bool lastCallInterrupted() { return rLog.interrupted; };
 
+	void interruptAsynchronously() {
+		rLog.interruptAsynchronously();
+		pi.interruptAsynchronously();
+	}
+
 	bool isTautology(const Clause& clause) const;
 
 	// Returns number of clauses removed

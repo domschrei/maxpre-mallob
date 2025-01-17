@@ -1,8 +1,10 @@
+#include <fstream>
 #include <vector>
 #include <iostream>
 #include <cassert>
 #include <set>
 #include <map>
+#include <unistd.h>
 
 #include "log.hpp"
 
@@ -252,6 +254,9 @@ void Log::timePlan(double timeLimit_, string useTechniques) {
 
 bool Log::requestTime(Technique t) {
 	if (asyncInterruptSet) {
+		printf("ASYNCHRONOUS INTERRUPT SET\n");
+		auto ofs = std::ofstream("maxpre-timings." + std::to_string(getpid()));
+		printTime(ofs);
 		interrupted = true;
 		return false;
 	}

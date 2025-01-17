@@ -55,7 +55,7 @@ public:
 	void preprocess(std::string techniques, int logLevel = 0, double timeLimit = 1e9);
 
 	void interruptAsynchronously() {
-		preprocessor.rLog.interruptAsynchronously();
+		preprocessor.interruptAsynchronously();
 	}
 
 	// Returns the topweight. This should be the same as given in the constructor.
