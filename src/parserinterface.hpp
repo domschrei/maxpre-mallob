@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <mutex>
 
 #include "preprocessorinterface.hpp"
 
@@ -23,6 +24,12 @@ private:
 	// Check if the interface has been initialized. 
 	bool pif_ok(string error_msg);
 	bool has_preprocessed;
+
+	// Guards reconstruction_images to allow solution reconstruction concurrently
+	// to preprocessing.
+	std::mutex mtx_reconstruction;
+	std::vector<PreprocessorInterface::PPImage> reconstruction_images;
+
 public:
 	/*
 	* read the file into the input reader,
@@ -67,7 +74,7 @@ public:
 	/* Returns the assignment of the original variables given the assignment of
 	 * variable in the solution of the preprocessed nistance
 	 */
-	std::vector<int> reconstruct(const std::vector<int>& trueLiterals, bool convertLits = 1); 
+	std::vector<int> reconstruct(const std::vector<int>& trueLiterals, int preprocessingLayer, bool convertLits = true, int leadingZeroes = 0);
 
 
 	void printInstance(std::ostream& output, int outputFormat = 0);

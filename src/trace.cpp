@@ -91,7 +91,7 @@ void Trace::removeWeight(const std::vector<uint64_t>& weight) {
 	}
 }
 
-pair<vector<int>, uint64_t> Trace::getSolution(const vector<int>& trueLits, uint64_t weight, int vars, int originalVars) {
+pair<vector<int>, uint64_t> Trace::getSolution(const vector<int>& trueLits, uint64_t weight, int vars, int originalVars, int leadingZeroes) {
 	vector<int> value(vars);
 	for (int lit : trueLits) {
 		if (abs(lit) <= vars) {
@@ -275,7 +275,7 @@ pair<vector<int>, uint64_t> Trace::getSolution(const vector<int>& trueLits, uint
 		}
 	}
 
-	vector<int> retLit;
+	vector<int> retLit(leadingZeroes, 0);
 	for (int i = 0; i < originalVars; i++) {
 		if (value[i] == VAR_FALSE) {
 			retLit.push_back(-(i + 1));

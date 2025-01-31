@@ -129,10 +129,17 @@ public:
 	void getInstance(std::vector<std::vector<int> >& retClauses, std::vector<std::pair<uint64_t, uint64_t> > & retWeights, std::vector<int>& retLabels, bool addRemovedWeight = 0, bool sortLabelsFrequency = 0);
 	void getInstance(std::vector<std::vector<int> >& retClauses, std::vector<std::vector<uint64_t> > & retWeights, std::vector<int>& retLabels, bool addRemovedWeight = 0, bool sortLabelsFrequency = 0);
 
+	struct PPImage {
+		int variables;
+		std::vector<int> solverVarToPPVar;
+		Trace trace;
+	};
+	PPImage getImageForIncrementalReconstruction(const PPImage& prevImg);
+
 	/* Returns the assignment of the original variables given the assignment of
 	 * variable in the solution of the preprocessed istance
 	 */
-	std::vector<int> reconstruct(const std::vector<int>& trueLiterals, bool convertLits = 1);
+	std::vector<int> reconstruct(const std::vector<int>& trueLiterals, bool convertLits = 1, PPImage* = nullptr, int leadingZeroes = 0);
 	/* Returns literals of the original instance fixed to true by preprocessing
 	*/
 	std::vector<int> getFixed();

@@ -49,14 +49,32 @@ namespace maxPreprocessor {
 		if (!pif_ok("get_lb")) {
 			return 0; 
 		}
-		// 0 index here because maxpre supports multiobjective. 
-		return (pif->getRemovedWeight())[0]; 
+		// 0 index here because maxpre supports multiobjective.
+		// Can also be empty for pathological instances without soft clauses.
+		auto removedWeight = pif->getRemovedWeight();
+		return removedWeight.empty() ? 0 : removedWeight[0];
 	}
 
-	std::vector<int> ParserInterface::reconstruct(const std::vector<int>& trueLiterals, bool convertLits)  {
-		if (pif_ok("reconstruct")) 
-			return pif->reconstruct(trueLiterals, convertLits); 
-		else {
+	std::vector<int> ParserInterface::reconstruct(const std::vector<int>& trueLiterals, int preprocessingLayer, bool convertLits, int leadingZeroes)  {
+		if (pif_ok("reconstruct")) {
+			// Construct a full coherent trace using all of the saved incremental traces
+			// up until the specified preprocessing layer the solution is coming from
+			mtx_reconstruction.lock();
+			Trace trace;
+			for (int layer = 0; layer <= preprocessingLayer; layer++) {
+				// Append all incremental operations and data to our full trace
+				auto& img = reconstruction_images.at(layer);
+				trace.operations.insert(trace.operations.end(), img.trace.operations.begin(), img.trace.operations.end());
+				trace.data.insert(trace.data.end(), img.trace.data.begin(), img.trace.data.end());
+			}
+			// Copy the preprocessing image of the specified layer and insert the full trace
+			PreprocessorInterface::PPImage img = reconstruction_images.at(preprocessingLayer);
+			mtx_reconstruction.unlock();
+			trace.removedWeight = std::move(img.trace.removedWeight);
+			img.trace = std::move(trace);
+			// Perform the actual reconstruction using our modified image
+			return pif->reconstruct(trueLiterals, convertLits, &img, leadingZeroes);
+		} else {
 			vector<int> dummy;
 			return dummy;
 		}
@@ -64,13 +82,12 @@ namespace maxPreprocessor {
 
 
 	void ParserInterface::preprocess(string techniques, int logLevel, double timeLimit) {
-		if (!pif_ok("preprocess")) {
+		if (pif_ok("preprocess")) {
+			pif->preprocess(techniques,logLevel, timeLimit);
+			has_preprocessed = true;
+		} else {
 			has_preprocessed = false;
-			return; 
 		}
-		pif->preprocess(techniques,logLevel, timeLimit);
-		has_preprocessed = true; 
-		return; 
 	}
 
 	bool ParserInterface::lastCallInterrupted() {
@@ -124,7 +141,13 @@ namespace maxPreprocessor {
 				ret_nbClauses++;
 			}			
 		}
-		return;
+
+		// Store the operations and data needed to reconstruct a solution at this preprocessing stage
+		mtx_reconstruction.lock();
+		auto img = pif->getImageForIncrementalReconstruction(
+			reconstruction_images.empty() ? PreprocessorInterface::PPImage() : reconstruction_images.back());
+		reconstruction_images.push_back(std::move(img));
+		mtx_reconstruction.unlock();
 	}
 	/*
 	* Print the preprocessed instance, mainly used for testing the "getInstance method of this class."

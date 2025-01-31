@@ -23,7 +23,7 @@ public:
 
 
 	int vars;
-	int excessVar;
+	int excessVar = 0;
 
 	TouchedList tl;
 
