@@ -22,6 +22,18 @@ namespace maxPreprocessor {
 			cerr<<"Failed to parse input instance: "<<inputReader.readError<<endl;
 			return readStatus;
 		}
+
+		assert(inputReader.weights.size() == inputReader.clauses.size());
+		for (size_t i = 0; i < inputReader.clauses.size(); i++) {
+			auto& clauseVec = inputReader.clauses[i];
+			auto& weights = inputReader.weights[i];
+			assert(weights.size() <= 1);
+			if (weights.size() > 0 && weights[0] < inputReader.top) {
+				// SOFT
+				originalSoftClauses.push_back({weights[0], clauseVec});
+			}
+		}
+
 		pif.reset(new maxPreprocessor::PreprocessorInterface (inputReader.clauses, inputReader.weights, inputReader.top, false));
 		return readStatus;
 	}
@@ -55,7 +67,8 @@ namespace maxPreprocessor {
 		return removedWeight.empty() ? 0 : removedWeight[0];
 	}
 
-	std::vector<int> ParserInterface::reconstruct(const std::vector<int>& trueLiterals, int preprocessingLayer, bool convertLits, int leadingZeroes)  {
+	std::vector<int> ParserInterface::reconstruct(const std::vector<int>& trueLiterals, size_t* outCostOrNullptr,
+			int preprocessingLayer, bool convertLits, int leadingZeroes)  {
 		if (pif_ok("reconstruct")) {
 			// Construct a full coherent trace using all of the saved incremental traces
 			// up until the specified preprocessing layer the solution is coming from
@@ -73,7 +86,30 @@ namespace maxPreprocessor {
 			trace.removedWeight = std::move(img.trace.removedWeight);
 			img.trace = std::move(trace);
 			// Perform the actual reconstruction using our modified image
-			return pif->reconstruct(trueLiterals, convertLits, &img, leadingZeroes);
+			auto solution = pif->reconstruct(trueLiterals, convertLits, &img, leadingZeroes);
+
+			if (outCostOrNullptr) {
+				// Compute the solution's cost w.r.t. the original problem instance
+				size_t cost = 0;
+				for (auto& [weight, lits] : originalSoftClauses) {
+					bool satisfied = false;
+					for (int lit : lits) {
+						int var = std::abs(lit);
+						assert(var > 0);
+						assert(var < solution.size());
+						int solutionLit = solution[var];
+						assert(solutionLit == var || solutionLit == -var);
+						if (solutionLit == lit) {
+							satisfied = true;
+							break;
+						}
+					}
+					if (!satisfied) cost += weight;
+				}
+				*outCostOrNullptr = cost;
+			}
+
+			return solution;
 		} else {
 			vector<int> dummy;
 			return dummy;
@@ -111,9 +147,6 @@ namespace maxPreprocessor {
 		vector<uint64_t> retWeights;
 		vector<int> retLabels;
 		pif->getInstance(retClauses, retWeights, retLabels, addRemovedWeight, false);
-
-		
-
 
 		uint64_t top = pif->getTopWeight();
 

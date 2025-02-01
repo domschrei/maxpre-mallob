@@ -223,7 +223,6 @@ namespace maxPreprocessor {
 		for (int lit : trueLiterals) {
 			if (lit == 0) continue;
 			if (convertLits) {
-				int prior = lit;
 				if ((int)solverToPP->size() <= abs(lit)-1) lit = 0;
 				else if (lit > 0) lit = solverToPP->at(abs(lit)-1);
 				else lit = -solverToPP->at(abs(lit)-1);

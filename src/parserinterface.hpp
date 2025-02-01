@@ -30,6 +30,8 @@ private:
 	std::mutex mtx_reconstruction;
 	std::vector<PreprocessorInterface::PPImage> reconstruction_images;
 
+	std::vector<std::pair<size_t, std::vector<int>>> originalSoftClauses;
+
 public:
 	/*
 	* read the file into the input reader,
@@ -74,7 +76,7 @@ public:
 	/* Returns the assignment of the original variables given the assignment of
 	 * variable in the solution of the preprocessed nistance
 	 */
-	std::vector<int> reconstruct(const std::vector<int>& trueLiterals, int preprocessingLayer, bool convertLits = true, int leadingZeroes = 0);
+	std::vector<int> reconstruct(const std::vector<int>& trueLiterals, size_t* outCostOrNullptr, int preprocessingLayer, bool convertLits = true, int leadingZeroes = 0);
 
 
 	void printInstance(std::ostream& output, int outputFormat = 0);
