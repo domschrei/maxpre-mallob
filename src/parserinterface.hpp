@@ -38,6 +38,8 @@ public:
 	*/
 	int read_file_init_interface(istream& input);
 
+	void setTmpDirectory(const std::string& tmpDirectory);
+
 	// Returns the current instance, give the data structures as parameters. 
 	// Specifically, ret_objective will contain pairs of uint_64 and int, representing the coefficient and the literal. 
 	// If the literal represented by the int is true, a cost equal to the coefficient is incurred.

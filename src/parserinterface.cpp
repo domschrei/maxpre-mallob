@@ -7,6 +7,7 @@
 #include "parserinterface.hpp"
 #include "global.hpp"
 #include "utility.hpp"
+#include "tmpdir.hpp"
 
 using namespace std;
 namespace maxPreprocessor {
@@ -36,6 +37,10 @@ namespace maxPreprocessor {
 
 		pif.reset(new maxPreprocessor::PreprocessorInterface (inputReader.clauses, inputReader.weights, inputReader.top, false));
 		return readStatus;
+	}
+
+	void ParserInterface::setTmpDirectory(const std::string& tmpDirectory) {
+		TmpDir::directory = tmpDirectory;
 	}
 
 	/*

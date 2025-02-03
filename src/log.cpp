@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include "log.hpp"
+#include "tmpdir.hpp"
 
 using namespace std;
 namespace maxPreprocessor {
@@ -255,7 +256,7 @@ void Log::timePlan(double timeLimit_, string useTechniques) {
 bool Log::requestTime(Technique t) {
 	if (asyncInterruptSet) {
 		printf("ASYNCHRONOUS INTERRUPT SET\n");
-		auto ofs = std::ofstream("maxpre-timings." + std::to_string(getpid()));
+		auto ofs = std::ofstream(TmpDir::directory + "/maxpre-timings." + std::to_string(getpid()));
 		printTime(ofs);
 		interrupted = true;
 		return false;
