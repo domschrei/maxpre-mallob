@@ -255,9 +255,6 @@ void Log::timePlan(double timeLimit_, string useTechniques) {
 
 bool Log::requestTime(Technique t) {
 	if (asyncInterruptSet) {
-		printf("ASYNCHRONOUS INTERRUPT SET\n");
-		auto ofs = std::ofstream(TmpDir::directory + "/maxpre-timings." + std::to_string(getpid()));
-		printTime(ofs);
 		interrupted = true;
 		return false;
 	}

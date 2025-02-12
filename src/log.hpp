@@ -32,7 +32,7 @@ public:
 	int labelsMatched;
 	int binaryCoresFound;
 	bool interrupted;
-	bool asyncInterruptSet {false};
+	volatile bool asyncInterruptSet {false};
 	Log();
 	Technique charToTechnique(char t);
 	void startTechnique(Technique t);
@@ -54,6 +54,7 @@ public:
 	void printTime(std::ostream& out);
 	void printInfo(std::ostream& out);
 	void interruptAsynchronously() {asyncInterruptSet = true;}
+	bool isInterruptedAsynchronously() {interrupted |= asyncInterruptSet; return asyncInterruptSet;}
 	std::vector<uint64_t> initialWeightRange;
 	std::vector<uint64_t> weightRange;
 };

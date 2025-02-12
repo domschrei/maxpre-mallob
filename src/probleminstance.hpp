@@ -27,7 +27,7 @@ public:
 
 	TouchedList tl;
 
-	bool asyncInterruptSet {false};
+	volatile bool asyncInterruptSet {false};
 private:
 	void init(uint64_t topWeight);
 public:
